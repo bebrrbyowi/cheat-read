@@ -19,10 +19,8 @@ export default function Stats() {
   return (
     <>
       <div className="screen">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: 8 }}>
-          <h1 className="h1" style={{ fontSize: 36 }}>Прогресс</h1>
-          {!empty && <Segmented label="Период" value={period} onChange={setPeriod} options={[{ value: 'week', label: 'Неделя' }, { value: 'month', label: 'Месяц' }]} style={{ width: 190 }} />}
-        </div>
+        <h1 className="h1" style={{ fontSize: 36, paddingLeft: 8 }}>Прогресс</h1>
+        {!empty && <Segmented label="Период" value={period} onChange={setPeriod} options={[{ value: 'week', label: 'Неделя' }, { value: 'month', label: 'Месяц' }]} style={{ marginTop: 16 }} />}
 
         {empty ? (
           <div className="empty" style={{ minHeight: 'calc(100dvh - 260px)', justifyContent: 'center', padding: '0 16px' }}>
@@ -59,16 +57,17 @@ export default function Stats() {
               </div>
             </div>
 
-            <div style={{ marginTop: 12, background: '#161513', color: '#fff', borderRadius: 24, padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-              <div style={{ flex: 'none' }}>
-                <div style={{ fontSize: 13, color: '#B5B0A7' }}>серия</div>
-                <div style={{ marginTop: 6, fontSize: 26, fontWeight: 700, letterSpacing: '-0.04em' }}>{s.streak}<span style={{ fontSize: 14, fontWeight: 500, color: '#B5B0A7', letterSpacing: 0 }}> {plural(s.streak, 'день', 'дня', 'дней')} подряд</span></div>
+            <div style={{ marginTop: 12, background: '#161513', color: '#fff', borderRadius: 24, padding: '18px 20px 20px' }}>
+              <div style={{ fontSize: 13, color: '#B5B0A7' }}>серия</div>
+              <div style={{ marginTop: 4, display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                <span className="num" style={{ fontSize: 34, lineHeight: '38px', fontWeight: 700, letterSpacing: '-0.04em' }}>{s.streak}</span>
+                <span style={{ fontSize: 15, fontWeight: 500, color: '#B5B0A7' }}>{plural(s.streak, 'день', 'дня', 'дней')} подряд</span>
               </div>
-              <div style={{ flex: 1, maxWidth: 170, display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 6, textAlign: 'center' }}>
+              <div style={{ marginTop: 16, display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 8, textAlign: 'center' }}>
                 {s.week.map((d) => (
                   <div key={d.label}>
-                    <span style={{ display: 'block', height: 22, borderRadius: 11, background: d.seconds >= 60 ? (d.isToday ? 'var(--grad)' : '#fff') : '#3A3530' }} />
-                    <span style={{ display: 'block', marginTop: 6, fontSize: 11, color: d.isToday ? '#fff' : '#B5B0A7', fontWeight: d.isToday ? 600 : 400 }}>{d.label}</span>
+                    <span style={{ display: 'block', height: 8, borderRadius: 4, background: d.seconds >= 60 ? (d.isToday ? 'var(--grad)' : '#fff') : '#3A3530' }} />
+                    <span style={{ display: 'block', marginTop: 8, fontSize: 12, color: d.isToday ? '#fff' : '#8E887E', fontWeight: d.isToday ? 600 : 400 }}>{d.label}</span>
                   </div>
                 ))}
               </div>

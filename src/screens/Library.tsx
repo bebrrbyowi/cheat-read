@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BottomNav, Confirm, Cover, Icon, Orb, Sheet } from '../components/ui';
+import { BottomNav, Confirm, Cover, Icon, Orb, Sheet, coverTitleSize, coverTitleStyle } from '../components/ui';
 import { useBooks, bookProgress, changed } from '../lib/store';
 import { deleteBook, type BookMeta } from '../lib/db';
 import { useSettings } from '../lib/settings';
@@ -83,7 +83,7 @@ export default function Library() {
                   <div key={b.id} style={{ minWidth: 0, position: 'relative' }}>
                     <button onClick={() => nav(`/read/${b.id}`)} style={{ display: 'block', width: '100%', textAlign: 'left' }} aria-label={`Читать: ${b.title}`}>
                       <span className="cover" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 154, padding: '12px 10px', background: b.color, color: 'rgba(255,255,255,0.9)', boxShadow: 'inset 3px 0 0 rgba(0,0,0,0.14), 0 10px 20px -14px rgba(22,21,19,0.45)' }}>
-                        <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 15, lineHeight: '18px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 5, WebkitBoxOrient: 'vertical' }}>{b.title}</span>
+                        <span lang="ru" style={{ ...coverTitleStyle, fontSize: coverTitleSize(b.title, 84, 15), WebkitLineClamp: 5 }}>{b.title}</span>
                         <span style={{ fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.75 }}>{b.format}</span>
                       </span>
                       <span style={{ display: 'block', marginTop: 8, fontSize: 13, lineHeight: '16px', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{b.title}</span>

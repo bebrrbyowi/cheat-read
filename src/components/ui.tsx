@@ -158,9 +158,25 @@ export function Range({ min, max, step, value, onChange, label }: { min: number;
   );
 }
 
+/* Размер шрифта названия на обложке: самое длинное слово должно влезать целиком */
+export function coverTitleSize(title: string, innerW: number, base: number): number {
+  const longest = Math.min(11, Math.max(1, ...title.split(/\s+/).map((w) => w.length)));
+  return Math.max(9, Math.min(base, Math.floor(innerW / (longest * 0.6))));
+}
+
+export const coverTitleStyle: React.CSSProperties = {
+  fontFamily: 'var(--serif)', fontStyle: 'italic', lineHeight: 1.18, overflow: 'hidden',
+  display: '-webkit-box', WebkitBoxOrient: 'vertical', overflowWrap: 'anywhere', hyphens: 'auto',
+};
+
 export function Cover({ color, w = 38, h = 54, title }: { color: string; w?: number; h?: number; title?: string }) {
+  const padX = w * 0.1;
+  const size = title ? coverTitleSize(title, w - padX * 2, Math.max(8, w * 0.15)) : 0;
+  const lines = title ? Math.max(1, Math.floor((h * 0.84) / (size * 1.18))) : 0;
   return (
-    <span aria-hidden="true" className="cover" style={{ width: w, height: h, background: color, display: 'block', color: 'rgba(255,255,255,0.85)', padding: title ? `${h * 0.08}px ${w * 0.1}px` : 0, fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: Math.max(8, w * 0.15), lineHeight: 1.15, overflow: 'hidden' }}>{title}</span>
+    <span aria-hidden="true" className="cover" lang="ru" style={{ width: w, height: h, background: color, display: 'block', color: 'rgba(255,255,255,0.85)', padding: title ? `${h * 0.08}px ${padX}px` : 0 }}>
+      {title && <span style={{ ...coverTitleStyle, fontSize: size, WebkitLineClamp: lines }}>{title}</span>}
+    </span>
   );
 }
 
