@@ -40,6 +40,7 @@ export default function PaceTest() {
   const [answers, setAnswers] = useState<(number | null)[][]>([[null, null], [null, null]]);
   const [picked, setPicked] = useState<number | null>(null);
   const [w, setW] = useState(350);
+  const [count, setCount] = useState(0);
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => { if (box.current) setW(box.current.clientWidth); }, [stage]);
@@ -49,6 +50,15 @@ export default function PaceTest() {
     const words = rounds[r].words;
     let k = 0;
     let t: number;
+    let c = 3;
+    const countdown = () => {
+      setCount(c);
+      t = window.setTimeout(() => {
+        c -= 1;
+        if (c > 0) countdown();
+        else { setCount(0); setI(0); t = window.setTimeout(run, 700); }
+      }, 800);
+    };
     const run = () => {
       t = window.setTimeout(() => {
         k += 1;
@@ -58,7 +68,7 @@ export default function PaceTest() {
       }, wordDelay(words[k], { wpm: rounds[r].wpm, punct: 'soft', ramp: false, sincePause: 10 }));
     };
     setI(0);
-    run();
+    countdown();
     return () => clearTimeout(t);
   }, [stage, r, rounds]);
 
@@ -135,8 +145,11 @@ export default function PaceTest() {
             <div ref={box} style={{ position: 'relative', margin: '14px -4px 0', height: 210, borderRadius: 32, background: '#fff', boxShadow: '0 18px 40px -24px rgba(70,45,10,0.28)', overflow: 'hidden' }}>
               <span className="tick" style={{ top: 36, height: 20, background: '#FF8A3D' }} />
               <span className="tick" style={{ bottom: 36, height: 20, background: '#FF5C8E' }} />
-              <Word word={R.words[i]} base={44} left={w * 0.38 - 16} right={w * 0.62 - 16} fontCss="var(--serif)" gradient />
+              {count > 0
+                ? <span key={count} className="num count-in" style={{ position: 'absolute', left: '38%', top: '50%', transform: 'translate(-50%, -50%)', fontSize: 64, fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1, color: 'var(--ink)' }}>{count}</span>
+                : <Word word={R.words[i]} base={44} left={w * 0.38 - 16} right={w * 0.62 - 16} fontCss="var(--serif)" gradient />}
             </div>
+            <div className="small" style={{ marginTop: 12, textAlign: 'center', opacity: count > 0 ? 1 : 0, transition: 'opacity .3s ease' }}>Смотри на место между метками</div>
             <div style={{ marginTop: 20, height: 4, borderRadius: 2, background: '#EFEAE2', overflow: 'hidden' }}><div style={{ height: '100%', width: (i / (R.words.length - 1)) * 100 + '%', background: 'var(--ink)', transition: 'width .2s linear' }} /></div>
             <div style={{ flex: 1.3 }} />
           </>

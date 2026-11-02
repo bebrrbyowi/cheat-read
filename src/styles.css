@@ -109,3 +109,6 @@ textarea.field { height: auto; min-height: 180px; padding: 14px 18px; line-heigh
 .tick { position: absolute; left: 38%; width: 2px; margin-left: -1px; border-radius: 1px; }
 
 .empty { display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+@keyframes countIn { from { opacity: 0; transform: translate(-50%, -50%) scale(1.25); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+.count-in { animation: countIn .35s ease both; }

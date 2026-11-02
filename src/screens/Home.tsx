@@ -73,7 +73,7 @@ export default function Home() {
               </Link>
               <Link to="/stats" className="card" style={{ borderRadius: 24, padding: '16px 18px' }}>
                 <div className="meta">серия</div>
-                <div style={{ marginTop: 8, fontSize: 26, fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1 }}>{sum.streak}<span style={{ fontSize: 15, fontWeight: 500, color: 'var(--muted)', letterSpacing: 0 }}> {plural(sum.streak, 'день', 'дня', 'дней')} подряд</span></div>
+                <div style={{ marginTop: 8, display: 'flex', alignItems: 'baseline', gap: 6, whiteSpace: 'nowrap', lineHeight: 1 }}><span className="num" style={{ fontSize: 26, fontWeight: 700, letterSpacing: '-0.04em' }}>{sum.streak}</span><span style={{ fontSize: 15, fontWeight: 500, color: 'var(--muted)' }}>{plural(sum.streak, 'день', 'дня', 'дней')}</span></div>
                 <div aria-hidden="true" style={{ marginTop: 10, display: 'flex', gap: 5 }}>
                   {sum.week.map((d) => <span key={d.label} style={{ flex: 1, height: 8, borderRadius: 4, background: d.seconds >= 60 ? (d.isToday ? 'var(--grad)' : 'var(--ink)') : '#E3DFD6' }} />)}
                 </div>
