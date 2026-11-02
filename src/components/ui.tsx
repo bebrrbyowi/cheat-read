@@ -134,8 +134,8 @@ export function useToast(): [string | null, (msg: string) => void] {
 }
 
 /* ---------- элементы управления ---------- */
-export function Switch({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label: string }) {
-  return <button role="switch" aria-checked={on} aria-label={label} className="switch" onClick={() => onChange(!on)}><span /></button>;
+export function Switch({ on, onChange, label, color, off }: { on: boolean; onChange: (v: boolean) => void; label: string; color?: string; off?: string }) {
+  return <button role="switch" aria-checked={on} aria-label={label} className="switch" style={{ background: on ? color : off }} onClick={() => onChange(!on)}><span /></button>;
 }
 
 export function Segmented<T extends string | number>({ value, options, onChange, label, style }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; label: string; style?: React.CSSProperties }) {

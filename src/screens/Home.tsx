@@ -42,7 +42,7 @@ export default function Home() {
         {ready && !books.length && (
           <div className="card empty" style={{ marginTop: 22, padding: '8px 20px 20px', borderRadius: 32 }}>
             <Orb size={190} mood="sleepy" tone="soft" />
-            <div className="h2" style={{ fontSize: 24 }}>Добавь первую книгу</div>
+            <div style={{ fontSize: 24, lineHeight: '27px', fontWeight: 800, letterSpacing: '-0.02em' }}>Добавь первую книгу</div>
             <p className="small" style={{ margin: '8px 0 0', fontSize: 15, lineHeight: '22px' }}>Загрузи файл TXT, EPUB или FB2 или вставь скопированный текст.</p>
             <Link to="/import" className="btn btn-dark" style={{ marginTop: 18, height: 54 }}>{Icon.plus(18)}Добавить книгу</Link>
           </div>
@@ -157,14 +157,15 @@ export default function Home() {
                 <Cover color={b.color} w={34} h={48} />
                 <span style={{ flex: 1, minWidth: 0 }}>
                   <span style={{ display: 'block', fontSize: 15, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{b.title}</span>
-                  <span className="meta" style={{ display: 'block', marginTop: 2 }}>{[b.author, b.finishedAt ? 'прочитано, начать заново' : Math.floor(bookProgress(b) * 100) + '%'].filter(Boolean).join(', ')}</span>
+                  <span className="meta" style={{ display: 'block', marginTop: 2 }}>{[b.author, b.finishedAt ? 'прочитано, начать заново' : (() => { const p = Math.floor(bookProgress(b) * 100); const gain = Math.max(1, Math.round((st.wpm * min) / Math.max(1, b.totalWords) * 100)); return p + '% → ' + Math.min(100, p + gain) + '%'; })()].filter(Boolean).join(', ')}</span>
                 </span>
                 <span aria-hidden="true" style={{ width: 24, height: 24, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1.5px solid ${on ? 'var(--ink)' : '#C9C2B7'}`, background: on ? 'var(--ink)' : 'transparent', color: '#fff' }}>{on && Icon.check(13)}</span>
               </button>
             );
           })}
         </div>
-        <button className="btn btn-dark" style={{ marginTop: 14 }} disabled={!pickId} onClick={() => pickId && nav(`/read/${pickId}?session=${min}`)}>{Icon.play(15)}Начать на {min} мин</button>
+        <Link to="/library" style={{ marginTop: 8, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 600 }}>Выбрать другую книгу</Link>
+        <button className="btn btn-dark" style={{ marginTop: 4 }} disabled={!pickId} onClick={() => pickId && nav(`/read/${pickId}?session=${min}`)}>{Icon.play(15)}Начать на {min} мин</button>
       </Sheet>
     </>
   );

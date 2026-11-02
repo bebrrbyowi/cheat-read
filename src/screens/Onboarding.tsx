@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Frame } from '../components/Frame';
 import { useNavigate } from 'react-router-dom';
 import { Icon, Logo, Orb, Word } from '../components/ui';
 import { setSettings } from '../lib/settings';
@@ -8,17 +9,6 @@ import { setSettings } from '../lib/settings';
 
 const DEMO = 'Просто смотри сюда. Слова будут меняться сами. Непривычно только первые пару минут.'.split(' ');
 
-function useFrameScale() {
-  const calc = () => Math.min(window.innerWidth / 390, window.innerHeight / 844);
-  const [s, setS] = useState(calc);
-  useEffect(() => {
-    const on = () => setS(calc());
-    window.addEventListener('resize', on);
-    return () => window.removeEventListener('resize', on);
-  }, []);
-  return s;
-}
-
 const muted = '#6E675D';
 const ink = '#17140F';
 
@@ -27,7 +17,6 @@ export default function Onboarding() {
   const [step, setStep] = useState(0);
   const [k, setK] = useState(0);
   const [wpm, setWpm] = useState(270);
-  const scale = useFrameScale();
 
   useEffect(() => {
     if (step !== 1) return;
@@ -45,13 +34,12 @@ export default function Onboarding() {
     return () => clearTimeout(t);
   }, [step]);
 
-  const finish = () => { setSettings({ onboarded: true, wpm }); nav('/', { replace: true }); };
+  const finish = () => { setSettings({ onboarded: true, wpm }); nav('/tour', { replace: true }); };
   const frac = (wpm - 150) / (600 - 150);
   const fillW = `calc(52px + (100% - 52px) * ${frac.toFixed(3)})`;
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#FCFBF8', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', left: '50%', top: '50%', width: 390, height: 844, marginLeft: -195, marginTop: -422, transform: `scale(${scale})`, color: '#161513', fontFamily: "'Inter Tight', system-ui, sans-serif" }}>
+    <Frame>
 
         {step === 0 && (
           <div style={{ position: 'absolute', left: 28, top: 52, height: 44, display: 'flex', alignItems: 'center', zIndex: 2 }}>
@@ -114,7 +102,6 @@ export default function Onboarding() {
             {Icon.arrow()}
           </button>
         </div>
-      </div>
-    </div>
+    </Frame>
   );
 }

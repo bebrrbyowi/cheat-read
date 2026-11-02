@@ -11,6 +11,7 @@ const Quotes = lazy(() => import('./screens/Quotes'));
 const Stats = lazy(() => import('./screens/Stats'));
 const PaceTest = lazy(() => import('./screens/PaceTest'));
 const Profile = lazy(() => import('./screens/Profile'));
+const Tour = lazy(() => import('./screens/Tour'));
 
 function Gate({ children }: { children: React.ReactNode }) {
   const st = useSettings();
@@ -35,6 +36,7 @@ export default function App() {
               <Route path="/stats" element={<Stats />} />
               <Route path="/test" element={<PaceTest />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/tour" element={<Tour />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Gate>

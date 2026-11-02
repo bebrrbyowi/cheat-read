@@ -86,7 +86,7 @@ export interface ReaderTheme {
 }
 
 export const THEMES: Record<ThemeId, ReaderTheme & { label: string; swatch: string }> = {
-  light: { label: 'Светлая', swatch: '#FFFFFF', bg: '#FCFBF8', surface: '#FFFFFF', sheet: '#FCFBF8', card: '#FFFFFF', ink: '#17140F', muted: '#6E675D', line: '#E8E3DB', chip: '#F3EFE9', orp: '#E8590C', hl: '#FCE3BE', btn: '#17140F', btnFg: '#FFFFFF' },
+  light: { label: 'Светлая', swatch: '#FFFFFF', bg: '#FCFBF8', surface: '#FFFFFF', sheet: '#FCFBF8', card: '#FFFFFF', ink: '#161513', muted: '#706C64', line: '#E3DFD6', chip: '#EFECE5', orp: '#E8590C', hl: '#FCE3BE', btn: '#17140F', btnFg: '#FFFFFF' },
   paper: { label: 'Бумага', swatch: '#EADCC2', bg: '#EFE6D6', surface: '#F8F2E6', sheet: '#EFE6D6', card: '#F8F2E6', ink: '#2B2219', muted: '#6E6152', line: '#DCCFB8', chip: '#E5D9C3', orp: '#C2410C', hl: '#F3CFA0', btn: '#2B2219', btnFg: '#F8F2E6' },
   night: { label: 'Ночь', swatch: '#1C1A18', bg: '#0F0E0D', surface: '#1C1A18', sheet: '#171513', card: '#211F1C', ink: '#EEEAE2', muted: '#9C978E', line: '#2E2B27', chip: '#2C2926', orp: '#FF9A3C', hl: 'rgba(255,154,60,0.30)', btn: '#EEEAE2', btnFg: '#0F0E0D' },
 };

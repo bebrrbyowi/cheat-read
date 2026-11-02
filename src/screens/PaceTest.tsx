@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon, Orb, Word } from '../components/ui';
+import { Frame } from '../components/Frame';
 import { PACE_TEXTS } from '../data/paceTexts';
 import { shuffle } from '../lib/format';
 import { getSettings, setSettings } from '../lib/settings';
@@ -39,11 +40,8 @@ export default function PaceTest() {
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[][]>([[null, null], [null, null]]);
   const [picked, setPicked] = useState<number | null>(null);
-  const [w, setW] = useState(350);
   const [count, setCount] = useState(0);
-  const box = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { if (box.current) setW(box.current.clientWidth); }, [stage]);
 
   useEffect(() => {
     if (stage !== 'read') return;
@@ -103,103 +101,119 @@ export default function PaceTest() {
   const R = rounds[r];
   const secs = Math.round((R.words.length / R.wpm) * 60 * 1.25);
 
+  const muted = '#6E675D';
+  const abs = (st: React.CSSProperties): React.CSSProperties => ({ position: 'absolute', ...st });
+  const mainBtn: React.CSSProperties = { width: '100%', height: 58, border: 0, borderRadius: 29, background: '#17140F', color: '#FFFFFF', fontSize: 17, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, cursor: 'pointer' };
+
   return (
-    <div className="fill" style={{ padding: 0 }}>
-      <div style={{ position: 'absolute', left: 16, right: 16, top: 'calc(var(--safe-top) + 12px)', display: 'flex', alignItems: 'center', gap: 14, zIndex: 2 }}>
-        <button className="icon-btn" aria-label="Закрыть тест" onClick={() => nav(-1)}>{Icon.close()}</button>
+    <Frame>
+      <div style={abs({ left: 16, right: 16, top: 52, display: 'flex', alignItems: 'center', gap: 14, zIndex: 2 })}>
+        <button aria-label="Закрыть тест" onClick={() => nav(-1)} style={{ flex: 'none', width: 44, height: 44, borderRadius: 22, background: '#FFFFFF', color: '#17140F', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 3px rgba(23,20,15,0.08)' }}>{Icon.close(18)}</button>
         {stage !== 'intro' && (
-          <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 4, marginRight: 58 }}>
-            {[0, 1, 2, 3, 4, 5].map((k) => <span key={k} style={{ height: 4, borderRadius: 2, background: k < stepIndex ? 'var(--ink)' : k === stepIndex ? 'linear-gradient(90deg, #FF8A3D, #FF5C8E)' : '#E8E3DB' }} />)}
+          <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(6, minmax(0, 1fr))', gap: 4, marginRight: 58 }}>
+            {[0, 1, 2, 3, 4, 5].map((k) => <span key={k} style={{ height: 4, borderRadius: 2, transition: 'background .3s ease', background: k < stepIndex ? '#17140F' : k === stepIndex ? 'linear-gradient(90deg, #FF8A3D, #FF5C8E)' : '#E8E3DB' }} />)}
           </div>
         )}
       </div>
 
-      <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', padding: 'calc(var(--safe-top) + 80px) 24px calc(var(--safe-bottom) + 24px)' }}>
-        {stage === 'intro' && (
-          <>
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Orb size={230} /></div>
-            <div className="small">≈ 2 минуты</div>
-            <h1 className="h-display" style={{ marginTop: 6 }}>Проверь свой<br />темп</h1>
-            <p className="body" style={{ marginTop: 14 }}>Ты прочитаешь два коротких отрывка на разной скорости и ответишь на вопросы. В конце покажем, какая скорость тебе подходит.</p>
-            <div style={{ flex: 0.6, minHeight: 20 }} />
-            <button className="btn btn-dark" onClick={() => setStage('ready')}>Начать тест{Icon.arrow()}</button>
-          </>
-        )}
-
-        {stage === 'ready' && (
-          <>
-            <div style={{ flex: 1 }} />
-            <div className="small">отрывок {r + 1} из 2</div>
-            <div className="num" style={{ marginTop: 8, fontSize: 104, lineHeight: 0.95, fontWeight: 800, letterSpacing: '-0.05em' }}>{R.wpm}</div>
-            <div style={{ marginTop: 10, fontSize: 18, color: 'var(--muted)' }}>слов в минуту</div>
-            <p className="body" style={{ marginTop: 30 }}>Текст начнётся сам и займёт около {secs} секунд. Поставить на паузу не получится.</p>
-            <div style={{ flex: 1.2 }} />
-            <button className="btn btn-dark" onClick={() => setStage('read')}>Поехали{Icon.arrow()}</button>
-          </>
-        )}
-
-        {stage === 'read' && (
-          <>
-            <div style={{ flex: 1 }} />
-            <div className="small">отрывок {r + 1}, {R.wpm} сл/мин</div>
-            <div ref={box} style={{ position: 'relative', margin: '14px -4px 0', height: 210, borderRadius: 32, background: '#fff', boxShadow: '0 18px 40px -24px rgba(70,45,10,0.28)', overflow: 'hidden' }}>
-              <span className="tick" style={{ top: 36, height: 20, background: '#FF8A3D' }} />
-              <span className="tick" style={{ bottom: 36, height: 20, background: '#FF5C8E' }} />
-              {count > 0
-                ? <span key={count} className="num count-in" style={{ position: 'absolute', left: '38%', top: '50%', transform: 'translate(-50%, -50%)', fontSize: 64, fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1, color: 'var(--ink)' }}>{count}</span>
-                : <Word word={R.words[i]} base={44} left={w * 0.38 - 16} right={w * 0.62 - 16} fontCss="var(--serif)" gradient />}
-            </div>
-            <div className="small" style={{ marginTop: 12, textAlign: 'center', opacity: count > 0 ? 1 : 0, transition: 'opacity .3s ease' }}>Смотри на место между метками</div>
-            <div style={{ marginTop: 20, height: 4, borderRadius: 2, background: '#EFEAE2', overflow: 'hidden' }}><div style={{ height: '100%', width: (i / (R.words.length - 1)) * 100 + '%', background: 'var(--ink)', transition: 'width .2s linear' }} /></div>
-            <div style={{ flex: 1.3 }} />
-          </>
-        )}
-
-        {stage === 'q' && (
-          <>
-            <div className="small" style={{ marginTop: 20 }}>вопрос {q + 1} из 2, отрывок {r + 1}</div>
-            <h1 className="h1" style={{ marginTop: 10, fontSize: 30, lineHeight: '35px' }}>{R.qs[q].q}</h1>
-            <div style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {R.qs[q].options.map((o, k) => (
-                <button key={k} aria-pressed={picked === k} onClick={() => answer(k)} className="card" style={{ minHeight: 64, padding: '14px 18px', borderRadius: 22, display: 'flex', alignItems: 'center', gap: 14, textAlign: 'left', fontSize: 17, lineHeight: '22px', border: `2px solid ${picked === k ? 'var(--ink)' : '#fff'}` }}>
-                  <span style={{ flex: 'none', width: 30, height: 30, borderRadius: 15, fontSize: 14, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', background: picked === k ? 'var(--ink)' : 'var(--chip)', color: picked === k ? '#fff' : 'var(--ink)' }}>{'АБВ'[k]}</span>
-                  {o}
-                </button>
-              ))}
-            </div>
-            <p className="small" style={{ marginTop: 18, lineHeight: '20px' }}>Если сомневаешься, выбери наугад. Правильные ответы покажем в конце.</p>
-          </>
-        )}
-
-        {stage === 'result' && result && (
-          <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginLeft: -16, marginTop: 20 }}><Orb size={96} mood="happy" /><span className="small">тебе подходит</span></div>
-            <div className="num" style={{ fontSize: 112, lineHeight: 0.95, fontWeight: 800, letterSpacing: '-0.05em' }}>{result.rec}</div>
-            <div style={{ marginTop: 10, fontSize: 18, color: 'var(--muted)' }}>слов в минуту, ≈ {Math.round((result.rec * 60) / 250)} страниц в час</div>
-            <div className="card" style={{ marginTop: 24, borderRadius: 24, padding: '4px 16px' }}>
-              {[0, 1].map((k) => (
-                <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 0', borderBottom: k === 0 ? '1px solid #F3EFE9' : 0 }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 15, fontWeight: 600 }}>Отрывок {k + 1}, {rounds[k].wpm} сл/мин</div>
-                    <div className="meta" style={{ marginTop: 2 }}>{rounds[k].source}</div>
-                  </div>
-                  <div style={{ display: 'flex', gap: 4 }}>
-                    {rounds[k].qs.map((x, j) => {
-                      const ok = answers[k][j] === x.ok;
-                      return <span key={j} aria-label={ok ? 'верно' : 'ошибка'} style={{ width: 26, height: 26, borderRadius: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, background: ok ? 'var(--ink)' : '#FFE3E8', color: ok ? '#fff' : '#C2185B' }}>{ok ? '✓' : '×'}</span>;
-                    })}
-                  </div>
+      {stage === 'intro' && (
+        <>
+          <div style={abs({ left: 0, right: 0, top: 118, display: 'flex', justifyContent: 'center' })}><Orb size={250} /></div>
+          <div style={abs({ left: 28, right: 28, top: 382 })}>
+            <div style={{ fontSize: 15, color: muted }}>≈ 2 минуты</div>
+            <h1 style={{ margin: '6px 0 0', fontSize: 38, lineHeight: '41px', fontWeight: 800, letterSpacing: '-0.02em' }}>Проверь свой<br />темп</h1>
+            <p style={{ margin: '14px 0 0', fontSize: 17, lineHeight: '25px', color: muted }}>Ты прочитаешь два коротких отрывка на разной скорости и ответишь на вопросы. В конце покажем, какая скорость тебе подходит.</p>
+            <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {rounds.map((x, k) => (
+                <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 15 }}>
+                  <span style={{ flex: 'none', width: 28, height: 28, borderRadius: 14, background: '#F3EFE9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 13 }}>{k + 1}</span>
+                  Отрывок на {x.wpm} сл/мин и 2 вопроса
                 </div>
               ))}
             </div>
-            <p className="small" style={{ marginTop: 16, fontSize: 15, lineHeight: '22px' }}>{result.text}</p>
-            <div style={{ flex: 1 }} />
-            <button className="btn btn-dark" onClick={() => { setSettings({ wpm: result.rec }); nav('/'); }}>Готово</button>
-            <div className="meta" style={{ textAlign: 'center', marginTop: 8 }}>Скорость чтения станет {result.rec} сл/мин</div>
-            <button className="btn-text" onClick={() => { setRounds(makeRounds()); setAnswers([[null, null], [null, null]]); setR(0); setQ(0); setStage('intro'); }}>Пройти ещё раз</button>
+          </div>
+        </>
+      )}
+
+      {stage === 'ready' && (
+        <div style={abs({ left: 28, right: 28, top: 210 })}>
+          <div style={{ fontSize: 15, color: muted }}>отрывок {r + 1} из 2</div>
+          <div className="num" style={{ marginTop: 8, fontSize: 104, lineHeight: 0.95, fontWeight: 800, letterSpacing: '-0.05em' }}>{R.wpm}</div>
+          <div style={{ marginTop: 10, fontSize: 18, color: muted }}>слов в минуту</div>
+          <p style={{ margin: '34px 0 0', fontSize: 17, lineHeight: '25px', color: muted }}>Текст начнётся сам и займёт около {secs} секунд. Поставить на паузу не получится.</p>
+        </div>
+      )}
+
+      {stage === 'read' && (
+        <>
+          <div style={abs({ left: 28, right: 28, top: 150, fontSize: 15, color: muted })}>отрывок {r + 1}, {R.wpm} сл/мин</div>
+          <div style={abs({ left: 20, right: 20, top: 307, height: 230, background: '#FFFFFF', borderRadius: 32, boxShadow: '0 1px 0 rgba(23,20,15,0.03), 0 18px 40px -24px rgba(70,45,10,0.28)', overflow: 'hidden' })}>
+            <span style={abs({ left: '38%', top: 42, width: 2, height: 22, marginLeft: -1, borderRadius: 1, background: '#FF8A3D' })} />
+            <span style={abs({ left: '38%', bottom: 42, width: 2, height: 22, marginLeft: -1, borderRadius: 1, background: '#FF5C8E' })} />
+            {count > 0
+              ? <span key={count} className="num count-in" style={abs({ left: '38%', top: '50%', transform: 'translate(-50%, -50%)', fontSize: 64, fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 })}>{count}</span>
+              : <Word word={R.words[i]} base={46} left={117} right={201} fontCss="var(--serif)" gradient />}
+          </div>
+          <div style={abs({ left: 28, right: 28, top: 549, textAlign: 'center', fontSize: 14, color: muted, transition: 'opacity .3s ease', opacity: count > 0 ? 1 : 0 })}>Смотри на место между метками</div>
+          <div style={abs({ left: 28, right: 28, top: 585 })}>
+            <div style={{ height: 4, borderRadius: 2, background: '#EFEAE2', overflow: 'hidden' }}><div style={{ height: '100%', background: '#17140F', transition: 'width .2s linear', width: (i / (R.words.length - 1)) * 100 + '%' }} /></div>
+          </div>
+        </>
+      )}
+
+      {stage === 'q' && (
+        <>
+          <div style={abs({ left: 28, right: 28, top: 150 })}>
+            <div style={{ fontSize: 15, color: muted }}>вопрос {q + 1} из 2, отрывок {r + 1}</div>
+            <h1 style={{ margin: '10px 0 0', fontSize: 30, lineHeight: '35px', fontWeight: 800, letterSpacing: '-0.02em' }}>{R.qs[q].q}</h1>
+          </div>
+          <div style={abs({ left: 20, right: 20, top: 330, display: 'flex', flexDirection: 'column', gap: 10 })}>
+            {R.qs[q].options.map((o, k) => (
+              <button key={k} aria-pressed={picked === k} onClick={() => answer(k)} style={{ textAlign: 'left', minHeight: 64, padding: '14px 18px', borderRadius: 22, fontSize: 17, lineHeight: '22px', display: 'flex', alignItems: 'center', gap: 14, transition: 'border-color .2s ease', background: '#FFFFFF', border: `2px solid ${picked === k ? '#17140F' : '#FFFFFF'}` }}>
+                <span style={{ flex: 'none', width: 30, height: 30, borderRadius: 15, fontSize: 14, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', background: picked === k ? '#17140F' : '#F3EFE9', color: picked === k ? '#FFFFFF' : '#17140F' }}>{'АБВ'[k]}</span>
+                <span style={{ flex: 1 }}>{o}</span>
+              </button>
+            ))}
+          </div>
+          <div style={abs({ left: 28, right: 28, top: 560, fontSize: 14, lineHeight: '20px', color: muted })}>Если сомневаешься, выбери наугад. Правильные ответы покажем в конце.</div>
+        </>
+      )}
+
+      {stage === 'result' && result && (
+        <div style={abs({ left: 28, right: 28, top: 120 })}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginLeft: -16 }}><Orb size={96} mood="happy" /><div style={{ fontSize: 15, color: muted }}>тебе подходит</div></div>
+          <div className="num" style={{ marginTop: 2, fontSize: 112, lineHeight: 0.95, fontWeight: 800, letterSpacing: '-0.05em' }}>{result.rec}</div>
+          <div style={{ marginTop: 10, fontSize: 18, color: muted }}>слов в минуту, ≈ {Math.round((result.rec * 60) / 250)} страниц в час</div>
+          <div style={{ marginTop: 24, background: '#FFFFFF', borderRadius: 24, padding: '4px 16px' }}>
+            {[0, 1].map((k) => (
+              <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 0', borderBottom: `1px solid ${k === 0 ? '#F3EFE9' : 'transparent'}` }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600 }}>Отрывок {k + 1}, {rounds[k].wpm} сл/мин</div>
+                  <div style={{ marginTop: 2, fontSize: 13, color: muted }}>{score(k)} из 2 правильно</div>
+                </div>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  {rounds[k].qs.map((x, j) => {
+                    const ok = answers[k][j] === x.ok;
+                    return <span key={j} aria-label={ok ? 'верно' : 'ошибка'} style={{ width: 26, height: 26, borderRadius: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, background: ok ? '#17140F' : '#FFE3E8', color: ok ? '#FFFFFF' : '#C2185B' }}>{ok ? '✓' : '×'}</span>;
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p style={{ margin: '16px 0 0', fontSize: 15, lineHeight: '22px', color: muted }}>{result.text}</p>
+        </div>
+      )}
+
+      <div style={abs({ left: 20, right: 20, bottom: 36, display: 'flex', flexDirection: 'column', gap: 6 })}>
+        {stage === 'intro' && <button style={mainBtn} onClick={() => setStage('ready')}>Начать тест{Icon.arrow()}</button>}
+        {stage === 'ready' && <button style={mainBtn} onClick={() => setStage('read')}>Поехали{Icon.arrow()}</button>}
+        {stage === 'result' && result && (
+          <>
+            <button style={mainBtn} onClick={() => { setSettings({ wpm: result.rec }); nav('/'); }}>Готово</button>
+            <button onClick={() => { setRounds(makeRounds()); setAnswers([[null, null], [null, null]]); setR(0); setQ(0); setStage('intro'); }} style={{ height: 48, fontSize: 15, fontWeight: 600 }}>Пройти ещё раз</button>
           </>
         )}
       </div>
-    </div>
+    </Frame>
   );
 }

@@ -68,9 +68,9 @@ textarea.field { height: auto; min-height: 180px; padding: 14px 18px; line-heigh
 .label { display: block; font-size: 13px; color: var(--muted); margin: 0 0 8px; }
 
 /* нижняя навигация */
-.nav { position: absolute; left: 16px; right: 16px; bottom: calc(var(--safe-bottom) + 20px); height: 64px; border-radius: 32px; background: var(--ink); display: flex; align-items: center; padding: 6px; gap: 4px; z-index: 5; }
+.nav { position: absolute; left: 16px; right: 16px; bottom: calc(var(--safe-bottom) + 24px); height: 64px; border-radius: 32px; background: var(--ink); display: flex; align-items: center; padding: 6px; gap: 4px; z-index: 5; }
 .nav a { flex: 1; height: 52px; border-radius: 26px; display: flex; align-items: center; justify-content: center; gap: 8px; color: #B5B0A7; font-size: 15px; font-weight: 600; transition: flex .25s ease, background .25s ease; }
-.nav a.active { flex: 1.7; background: #FFFFFF; color: var(--ink); }
+.nav a.active { flex: 1.6; background: #FFFFFF; color: var(--ink); }
 
 /* шторка */
 .backdrop { position: absolute; inset: 0; background: rgba(20,14,6,0.38); z-index: 30; animation: fade .2s ease; }
@@ -99,7 +99,7 @@ textarea.field { height: auto; min-height: 180px; padding: 14px 18px; line-heigh
 .range input { position: absolute; left: -12px; top: 0; width: calc(100% + 24px); height: 32px; margin: 0; opacity: 0; cursor: pointer; }
 
 /* обложка */
-.cover { border-radius: 5px 10px 10px 5px; box-shadow: inset 3px 0 0 rgba(0,0,0,0.16); flex: none; }
+.cover { border-radius: 4px 7px 7px 4px; box-shadow: inset 2px 0 0 rgba(0,0,0,0.16); flex: none; }
 
 /* RSVP-слово */
 .word { position: absolute; left: 38%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: baseline; white-space: nowrap; line-height: 1.4; font-weight: 500; letter-spacing: -0.01em; }
@@ -112,3 +112,7 @@ textarea.field { height: auto; min-height: 180px; padding: 14px 18px; line-heigh
 
 @keyframes countIn { from { opacity: 0; transform: translate(-50%, -50%) scale(1.25); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
 .count-in { animation: countIn .35s ease both; }
+@keyframes tourRipple { from { transform: scale(.6); opacity: .9; } to { transform: scale(2.2); opacity: 0; } }
+.tour-ripple { animation: tourRipple .6s ease-out both; }
+@keyframes tourTxt { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.tour-text { animation: tourTxt .4s ease both; }

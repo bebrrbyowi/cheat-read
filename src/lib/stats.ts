@@ -8,6 +8,8 @@ export interface Summary {
   /** Последние 4 недели. */
   month: { label: string; seconds: number }[];
   weekSeconds: number;
+  prevWeekSeconds: number;
+  prevMonthSeconds: number;
   monthSeconds: number;
   weekWords: number;
   monthWords: number;
@@ -46,7 +48,7 @@ export function summarize(days: DayStat[], sessions: SessionLog[], now = Date.no
     return s;
   };
   const month = [3, 2, 1, 0].map((k) => ({
-    label: k === 0 ? 'эта' : k + ' нед. назад',
+    label: (4 - k) + ' нед',
     seconds: sumRange(monday - k * 7 * DAY, monday - k * 7 * DAY + 6 * DAY, (d) => d.seconds),
   }));
 
@@ -60,6 +62,8 @@ export function summarize(days: DayStat[], sessions: SessionLog[], now = Date.no
     week,
     month,
     weekSeconds: sumRange(monday, today, (d) => d.seconds),
+    prevWeekSeconds: sumRange(monday - 7 * DAY, monday - DAY, (d) => d.seconds),
+    prevMonthSeconds: sumRange(today - 55 * DAY, today - 28 * DAY, (d) => d.seconds),
     monthSeconds: sumRange(today - 27 * DAY, today, (d) => d.seconds),
     weekWords: sumRange(monday, today, (d) => d.words),
     monthWords: sumRange(today - 27 * DAY, today, (d) => d.words),
