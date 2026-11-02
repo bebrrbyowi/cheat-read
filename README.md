@@ -23,7 +23,11 @@ npm run build     # сборка в dist/
 npm run preview   # проверить сборку
 ```
 
-## Деплой на Vercel
+## Деплой
+
+Каждый пуш в `main` публикует сайт на GitHub Pages: https://bebrrbyowi.github.io/cheat-read/
+
+### Vercel (по желанию)
 
 1. vercel.com → Add New → Project → импортировать этот репозиторий
 2. Framework Preset: Vite (определится сам), Build: `npm run build`, Output: `dist`

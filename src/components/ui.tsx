@@ -73,7 +73,7 @@ export function Orb({ size = 240, mood = 'awake', tone = 'warm' }: { size?: numb
 }
 
 export function Logo({ width = 112, dark = false }: { width?: number; dark?: boolean }) {
-  return <img src={dark ? '/logo-dark.svg' : '/logo.svg'} alt="cheatread" width={width} height={Math.round(width * 214.6 / 855.83)} style={{ display: 'block' }} />;
+  return <img src={dark ? import.meta.env.BASE_URL + 'logo-dark.svg' : import.meta.env.BASE_URL + 'logo.svg'} alt="cheatread" width={width} height={Math.round(width * 214.6 / 855.83)} style={{ display: 'block' }} />;
 }
 
 /* ---------- навигация ---------- */
